@@ -3,12 +3,9 @@ import { SVGMap } from "react-svg-map"
 import SouthKorea from "@svg-maps/south-korea"
 
 const newMap = () => {
-  console.log("!!!!!!!!!!!!!!!!!!!!!!!!")
-  console.log(SouthKorea)
   const regions = {
     ...SouthKorea,
     locations: SouthKorea.locations.map((location, index) => {
-      console.log(location.id)
       return location
     })
   }
@@ -37,7 +34,7 @@ function componentDidMount() {
 }
 
 const USMap = () => {
-  return <SVGMap map={newMap()} onLocationClick={mouseOver}/>
+  return <SVGMap map={newMap()} onLocationMouseOver={mouseOver}/>
 }
 
 export default USMap
