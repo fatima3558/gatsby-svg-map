@@ -14,7 +14,7 @@ const newMap = () => {
 
 const mouseOver = (event, initialState, setState) => {
   const current = event.target
-  current.setAttribute('style', 'fill:red')
+  current.setAttribute('style', 'fill:grey')
 }
 
 const mouseOut = (event, initialState, setState) => {
@@ -29,13 +29,21 @@ const mouseOut = (event, initialState, setState) => {
 
 const mouseMove = (event, initialState, setState) => {
   const activeRegion = event.target.getAttribute('name')
+
   const tooltipStyle = {
     display: 'block',
+    position: 'fixed',
     top: event.clientY + 10,
-    left: event.clientX - 100
+    left: event.clientX + 10,
+    backgroundColor: 'white',
+    border: '1px solid red',
+    color: 'black',
+    minHeight: '40px',
+    minWidth: '100px',
+    textAlign: 'center'
   };
 
-  setState({ activeRegion });
+  setState({ activeRegion, tooltipStyle });
 
 }
 
@@ -44,11 +52,12 @@ const USMap = () => {
     activeRegion: null,
     tooltipStyle: {
       display: 'none'
-    }})
+    }
+  })
   return (
     <div>
       <div style={state.tooltipStyle}>
-        {state.activeRegion}
+        <span>{state.activeRegion}</span>
       </div>
       <SVGMap 
         map={newMap()}
@@ -57,7 +66,7 @@ const USMap = () => {
         onLocationMouseMove={(e) => mouseMove(e, state, setState)}
       />
     </div>
-    )
+  )
 }
 
 export default USMap
