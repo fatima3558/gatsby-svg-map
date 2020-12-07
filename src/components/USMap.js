@@ -1,11 +1,11 @@
 import React, { useState } from "react"
 import { SVGMap } from "react-svg-map"
-import SouthKorea from "@svg-maps/south-korea"
+import USStatesTerritories from "../images/svg/index.js"
 
 const newMap = () => {
   const regions = {
-    ...SouthKorea,
-    locations: SouthKorea.locations.map((location, index) => {
+    ...USStatesTerritories,
+    locations: USStatesTerritories.locations.map((location, index) => {
       return location
     })
   }
@@ -59,12 +59,15 @@ const USMap = () => {
       <div style={state.tooltipStyle}>
         <span>{state.activeRegion}</span>
       </div>
-      <SVGMap 
-        map={newMap()}
-        onLocationMouseOver={(e) => mouseOver(e, state, setState)}
-        onLocationMouseOut={(e) => mouseOut(e, state, setState)}
-        onLocationMouseMove={(e) => mouseMove(e, state, setState)}
-      />
+      <div class="svg-div">
+        <SVGMap
+          class="svg-map"
+          map={newMap()}
+          onLocationMouseOver={(e) => mouseOver(e, state, setState)}
+          onLocationMouseOut={(e) => mouseOut(e, state, setState)}
+          onLocationMouseMove={(e) => mouseMove(e, state, setState)}
+        />
+      </div>
     </div>
   )
 }
