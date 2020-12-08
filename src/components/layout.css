@@ -600,6 +600,29 @@ pre tt:after {
   max-width: 700px;
 }
 
-.svg-map > * {
-  stroke: blue;
+.svg-map {
+  fill: lightgrey;
+  stroke: orange;
 }
+
+.state > * {
+  fill: lightblue;
+  stroke: black;
+}
+
+#frames {
+  fill: none;
+  stroke: grey;
+}
+
+.lavender {
+  fill: lavender;
+}
+
+.green {
+  fill: green
+};
+
+.orange {
+  fill: orange;
+};

@@ -1,36 +1,26 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { SVGMap } from "react-svg-map"
 import USStatesTerritories from "../images/svg/index.js"
 
-const newMap = () => {
-  const regions = {
-    ...USStatesTerritories,
-    locations: USStatesTerritories.locations.map((location, index) => {
-      return location
-    })
-  }
-  return regions
-}
-
-const mouseOver = (event, initialState, setState) => {
+const mouseOver = (event) => {
   const current = event.target
-  current.setAttribute('style', 'fill:grey')
+  if(current.id !== "frames") {
+    current.setAttribute('style', 'fill:grey;stroke:black')
+  }
 }
 
-const mouseOut = (event, initialState, setState) => {
+const mouseOut = (event, activeRegion, setActiveRegion, tooltipStyle, setTooltipStyle) => {
   const current = event.target
   current.setAttribute('style', '')
-
-  const activeRegion = event.target.getAttribute('name')
-  const tooltipStyle = {display: 'none'}
-
-  setState({ activeRegion, tooltipStyle})
+  const newActiveRegion = event.target.getAttribute('name')
+  const newTooltipStyle = {display: 'none'}
+  setActiveRegion(newActiveRegion)
+  setTooltipStyle(newTooltipStyle)
 }
 
-const mouseMove = (event, initialState, setState) => {
-  const activeRegion = event.target.getAttribute('name')
-
-  const tooltipStyle = {
+const mouseMove = (event, activeRegion, setActiveRegion, tooltipStyle, setTooltipStyle) => {
+  const newActiveRegion = event.target.getAttribute('name')
+  const newTooltipStyle = {
     display: 'block',
     position: 'fixed',
     top: event.clientY + 10,
@@ -42,31 +32,61 @@ const mouseMove = (event, initialState, setState) => {
     minWidth: '100px',
     textAlign: 'center'
   };
+  setActiveRegion(newActiveRegion)
+  setTooltipStyle(newTooltipStyle)
+}
 
-  setState({ activeRegion, tooltipStyle });
-
+const getClass = (location, index) => {
+  if (location.id === "frames") {
+    return `svg-map__location`
+  } else {
+    let color
+    if (location.name.includes("North")) {
+      color = "lavender"
+    } else if (location.name.includes("South") || location.name.includes("West")) {
+      color = "green"
+    }
+    return `svg-map__location state ${color}`
+  }
 }
 
 const USMap = () => {
-  const [state, setState] = useState({
-    activeRegion: null,
-    tooltipStyle: {
-      display: 'none'
-    }
-  })
+  const [activeRegion, setActiveRegion] = useState(null)
+  const [tooltipStyle, setTooltipStyle] = useState({display: 'none'})
+  const [data, setData] = useState({USStatesTerritories})
+  const [mapType, setMapType] = useState("normal")
+
   return (
     <div>
-      <div style={state.tooltipStyle}>
-        <span>{state.activeRegion}</span>
+      <div style={tooltipStyle}>
+        <span>{activeRegion}</span>
       </div>
-      <div class="svg-div">
+      <select onChange={(e) => {
+        if (mapType === "normal") {
+          setMapType("choropleth")
+        } else {
+          setMapType("normal")
+        }
+      }}>
+        <option value="normal" default>Normal</option>
+        <option value="choropleth">Choropleth</option>
+      </select>
+      <div className="svg-div">
+        { mapType === "choropleth" ? 
         <SVGMap
-          class="svg-map"
-          map={newMap()}
-          onLocationMouseOver={(e) => mouseOver(e, state, setState)}
-          onLocationMouseOut={(e) => mouseOut(e, state, setState)}
-          onLocationMouseMove={(e) => mouseMove(e, state, setState)}
+          map={USStatesTerritories}
+          locationClassName={getClass}
+          onLocationMouseOver={(e) => mouseOver(e)}
+          onLocationMouseOut={(e) => mouseOut(e, activeRegion, setActiveRegion, tooltipStyle, setTooltipStyle)}
+          onLocationMouseMove={(e) => mouseMove(e, activeRegion, setActiveRegion, tooltipStyle, setTooltipStyle)}
+        /> : 
+        <SVGMap
+          map={USStatesTerritories}
+          onLocationMouseOver={(e) => mouseOver(e)}
+          onLocationMouseOut={(e) => mouseOut(e, activeRegion, setActiveRegion, tooltipStyle, setTooltipStyle)}
+          onLocationMouseMove={(e) => mouseMove(e, activeRegion, setActiveRegion, tooltipStyle, setTooltipStyle)}
         />
+        }
       </div>
     </div>
   )
